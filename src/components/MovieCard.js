@@ -4,7 +4,18 @@ import { ADD_MOVIE_TO_FAVORITES, REMOVE_MOVIE_FROM_FAVORITES } from '@/graphQL/m
 import { useMutation } from '@apollo/client'
 import { useRouter } from 'next/router'
 
-const MovieCard = ({ title, year, posterImage, type, actors, rate, plot, apiId }) => {
+const MovieCard = ({
+    title,
+    year,
+    posterImage,
+    type,
+    actors,
+    rate,
+    plot,
+    apiId,
+    setMovieId,
+    refetch
+}) => {
     const [message, setMessage] = useState('')
     const [addMovieToFavorites] = useMutation(ADD_MOVIE_TO_FAVORITES)
     const [removeMovieFromFavorites] = useMutation(REMOVE_MOVIE_FROM_FAVORITES)
@@ -55,6 +66,8 @@ const MovieCard = ({ title, year, posterImage, type, actors, rate, plot, apiId }
                 }, 3000)
             }
         })
+        setMovieId('')
+        await refetch()
     }
 
     const showMessage = () => {

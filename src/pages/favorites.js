@@ -21,7 +21,11 @@ export default function Home() {
         onError: () => router.push('/login')
     })
 
-    const { data: detailData, loading: detailLoading } = useQuery(GET_DETAILED_FAVORITE_INFO, {
+    const {
+        data: detailData,
+        loading: detailLoading,
+        refetch
+    } = useQuery(GET_DETAILED_FAVORITE_INFO, {
         fetchPolicy: 'network-only',
         onError: () => {
             setErrorMessage('Something went wrong, please try again')
@@ -75,6 +79,8 @@ export default function Home() {
                                           plot={movie.Plot}
                                           rate={movie.Rating}
                                           apiId={movie.apiId}
+                                          refetch={refetch}
+                                          setMovieId={setMovieId}
                                       />
                                   </div>
                               )
