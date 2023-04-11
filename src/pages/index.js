@@ -70,7 +70,6 @@ export default function Home() {
         if (search && data?.getGeneralMoviesInfo?.totalResults === null) {
             setErrorMessage('No results found 🔍')
         }
-        console.log(data)
     }, [data, movies, search, movieId])
 
     useEffect(() => {
@@ -78,7 +77,6 @@ export default function Home() {
         if (movieId && detailData?.getDetailedFavoriteInfo?.totalResults === null) {
             setErrorMessage('No results found 🔍')
         }
-        console.log('detail', detailData)
     }, [detailData, movies, movieId])
 
     return (
