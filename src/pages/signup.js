@@ -160,6 +160,12 @@ const SignUp = () => {
                                 className="bg-red-800 w-full mt-5 p-2 text-white hover:cursor-pointer hover:bg-red-400"
                                 value="SignUp"
                             />
+                            <input
+                                type="button"
+                                className="bg-red-800 w-full mt-5 p-2 text-white hover:cursor-pointer hover:bg-red-400"
+                                value="Back"
+                                onClick={() => router.push('/login')}
+                            />
                         </form>
                     </div>
                 </div>

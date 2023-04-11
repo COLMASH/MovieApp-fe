@@ -4,6 +4,10 @@ import { useRouter } from 'next/router'
 
 const Sidebar = () => {
     const router = useRouter()
+    const handleLogout = () => {
+        localStorage.removeItem('token')
+        router.push('/login')
+    }
     return (
         <aside className="bg-red-600 xs:w-1/3 sm:w-1/5 sm:min-h-screen p-5">
             <div>
@@ -16,6 +20,9 @@ const Sidebar = () => {
                 <li className={router.asPath === '/favorites' ? 'bg-red-400 p-3' : 'p-3'}>
                     <Link href="/favorites">Favorites</Link>
                 </li>
+                <div className="mt-60 p-3 hover:cursor-pointer" onClick={handleLogout}>
+                    <p>Logout</p>
+                </div>
             </nav>
         </aside>
     )

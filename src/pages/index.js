@@ -4,12 +4,23 @@ import { useQuery } from '@apollo/client'
 import { GET_DETAILED_FAVORITE_INFO, GET_GENERAL_MOVIES_INFO } from '../graphQL/queries/movies'
 import MovieCard from '../components/MovieCard'
 import { moviePlaceholder } from '../assets'
+import { GET_USER } from '@/graphQL/queries/user'
+import { useRouter } from 'next/router'
 
 export default function Home() {
     const [movies, setMovies] = useState([])
     const [search, setSearch] = useState('')
     const [errorMessage, setErrorMessage] = useState('')
     const [movieId, setMovieId] = useState('')
+    const [token, setToken] = useState(null)
+    const [hasEffectFinished, setHasEffectFinished] = useState(false)
+    const router = useRouter()
+
+    useQuery(GET_USER, {
+        skip: !hasEffectFinished,
+        variables: { token },
+        onError: () => router.push('/login')
+    })
 
     const { data, loading } = useQuery(GET_GENERAL_MOVIES_INFO, {
         skip: search === '',
@@ -50,6 +61,11 @@ export default function Home() {
     }
 
     useEffect(() => {
+        setToken(localStorage.getItem('token'))
+        setHasEffectFinished(true)
+    }, [token])
+
+    useEffect(() => {
         if (data) setMovies(data.getGeneralMoviesInfo.movies)
         if (search && data?.getGeneralMoviesInfo?.totalResults === null) {
             setErrorMessage('No results found 🔍')
@@ -78,54 +94,57 @@ export default function Home() {
                 ></input>
                 {(loading || detailLoading) && <h2 className="my-10 text-2xl">Loading ⌛️...</h2>}
                 {errorMessage && <h2 className="my-10 text-2xl">{errorMessage}.</h2>}
-                {!detailLoading && movieId && movies ? (
-                    movies.map(movie => {
-                        return (
-                            <div
-                                className="grid sm:grid-cols-1 grid-rows-1 gap-5 my-10 justify-items-center items-center"
-                                key={movie.apiId}
-                            >
-                                <div
-                                    className="hover:cursor-pointer text-2xl"
-                                    onClick={() => setMovieId('')}
-                                >
-                                    ⬅ Back
-                                </div>
-                                <MovieCard
-                                    posterImage={
-                                        movie.Poster !== 'N/A' ? movie.Poster : moviePlaceholder
-                                    }
-                                    title={movie.Title}
-                                    year={movie.Year}
-                                    type={movie.Type}
-                                    actors={movie.Actors}
-                                    plot={movie.Plot}
-                                    rate={movie.Rating}
-                                />
-                            </div>
-                        )
-                    })
-                ) : (
-                    <div className="grid sm:grid-cols-3 grid-rows-4 gap-5 my-10">
-                        {movies &&
-                            movies.map(movie => {
-                                return (
-                                    <div key={movie.apiId} onClick={() => setMovieId(movie.apiId)}>
-                                        <MovieCard
-                                            posterImage={
-                                                movie.Poster !== 'N/A'
-                                                    ? movie.Poster
-                                                    : moviePlaceholder
-                                            }
-                                            title={movie.Title}
-                                            year={movie.Year}
-                                            type={movie.Type}
-                                        />
-                                    </div>
-                                )
-                            })}
-                    </div>
-                )}
+                {!detailLoading && movieId && movies
+                    ? movies.map(movie => {
+                          return (
+                              <div
+                                  className="grid sm:grid-cols-1 grid-rows-1 gap-5 my-10 justify-items-center items-center"
+                                  key={movie.apiId}
+                              >
+                                  <div
+                                      className="hover:cursor-pointer text-2xl"
+                                      onClick={() => setMovieId('')}
+                                  >
+                                      ⬅ Back
+                                  </div>
+                                  <MovieCard
+                                      posterImage={
+                                          movie.Poster !== 'N/A' ? movie.Poster : moviePlaceholder
+                                      }
+                                      title={movie.Title}
+                                      year={movie.Year}
+                                      type={movie.Type}
+                                      actors={movie.Actors}
+                                      plot={movie.Plot}
+                                      rate={movie.Rating}
+                                  />
+                              </div>
+                          )
+                      })
+                    : !detailLoading && (
+                          <div className="grid sm:grid-cols-3 grid-rows-4 gap-5 my-10">
+                              {movies &&
+                                  movies.map(movie => {
+                                      return (
+                                          <div
+                                              key={movie.apiId}
+                                              onClick={() => setMovieId(movie.apiId)}
+                                          >
+                                              <MovieCard
+                                                  posterImage={
+                                                      movie.Poster !== 'N/A'
+                                                          ? movie.Poster
+                                                          : moviePlaceholder
+                                                  }
+                                                  title={movie.Title}
+                                                  year={movie.Year}
+                                                  type={movie.Type}
+                                              />
+                                          </div>
+                                      )
+                                  })}
+                          </div>
+                      )}
             </Layout>
         </div>
     )
