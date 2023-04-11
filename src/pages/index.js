@@ -105,7 +105,7 @@ export default function Home() {
                                       className="hover:cursor-pointer text-2xl"
                                       onClick={() => setMovieId('')}
                                   >
-                                      ⬅ Back
+                                      <span className="font-black">{'<--'}</span> Back
                                   </div>
                                   <MovieCard
                                       posterImage={
@@ -117,6 +117,7 @@ export default function Home() {
                                       actors={movie.Actors}
                                       plot={movie.Plot}
                                       rate={movie.Rating}
+                                      apiId={movie.apiId}
                                   />
                               </div>
                           )
