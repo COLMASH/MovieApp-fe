@@ -47,7 +47,7 @@ const MovieCard = ({
                 favoriteId: apiId
             },
             onError: error => {
-                if (error.message.includes("Movie hasn't been found")) {
+                if (error.message.includes("Movie hasn't been found.")) {
                     setMessage('Movie already removed from favorites')
                     setTimeout(() => {
                         setMessage(null)
