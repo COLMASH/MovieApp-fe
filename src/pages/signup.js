@@ -1,21 +1,15 @@
-import React from 'react'
+import React, { useState } from 'react'
 import Layout from '../components/Layout'
 import { useFormik } from 'formik'
 import * as Yup from 'yup'
-import { useMutation, gql } from '@apollo/client'
-
-const NEW_USER = gql`
-    mutation newUser($input: UserInput) {
-        newUser(input: $input) {
-            name
-            lastName
-            email
-        }
-    }
-`
+import { useMutation } from '@apollo/client'
+import { useRouter } from 'next/router'
+import { NEW_USER } from '../graphQL/mutations/user'
 
 const SignUp = () => {
+    const [message, setMessage] = useState('')
     const [newUser] = useMutation(NEW_USER)
+    const router = useRouter()
 
     const formik = useFormik({
         initialValues: {
@@ -37,7 +31,7 @@ const SignUp = () => {
         onSubmit: async values => {
             const { name, lastName, email, password } = values
             try {
-                await newUser({
+                const data = await newUser({
                     variables: {
                         input: {
                             name,
@@ -47,15 +41,36 @@ const SignUp = () => {
                         }
                     }
                 })
+                setMessage(`User with email: ${data.email} has been created successfully!`)
+                setTimeout(() => {
+                    setMessage(null)
+                    router.push('/login')
+                }, 3000)
             } catch (error) {
+                setMessage(error.message.replace('newUser: Error: ', ''))
+                setTimeout(() => {
+                    setMessage(null)
+                }, 3000)
                 console.error(error)
             }
         }
     })
+
+    const showMessage = () => {
+        return (
+            <div className="bg-red-800 py-3 px-3 w-full my-3 max-w-sm text-center mx-auto">
+                <p>{message}</p>
+            </div>
+        )
+    }
     return (
         <>
             <Layout>
-                <h1 className="text-center text-2xl text-white font-light">SignUp</h1>
+                {message && showMessage()}
+                <h1 className="text-center text-2xl text-white font-light">
+                    {' '}
+                    <span className="text-2xl font-black">🎬 MovieApp</span> - SignUp
+                </h1>
                 <div className="flex justify-center mt-5">
                     <div className="w-full max-w-sm">
                         <form
@@ -74,6 +89,7 @@ const SignUp = () => {
                                     id="name"
                                     type="text"
                                     placeholder="Name"
+                                    value={formik.values.name}
                                     onChange={formik.handleChange}
                                     onBlur={formik.handleBlur}
                                 />
@@ -91,7 +107,9 @@ const SignUp = () => {
                                     id="lastName"
                                     type="text"
                                     placeholder="Last Name"
+                                    value={formik.values.lastName}
                                     onChange={formik.handleChange}
+                                    onBlur={formik.handleBlur}
                                 />
                                 {formik.touched.lastName && formik.errors.lastName ? (
                                     <div className="mb-4 text-red-700">
@@ -109,7 +127,9 @@ const SignUp = () => {
                                     id="email"
                                     type="email"
                                     placeholder="User Email"
+                                    value={formik.values.email}
                                     onChange={formik.handleChange}
+                                    onBlur={formik.handleBlur}
                                 />
                                 {formik.touched.email && formik.errors.email ? (
                                     <div className="mb-4 text-red-700">{formik.errors.email}</div>
@@ -125,7 +145,9 @@ const SignUp = () => {
                                     id="password"
                                     type="password"
                                     placeholder="User Password"
+                                    value={formik.values.password}
                                     onChange={formik.handleChange}
+                                    onBlur={formik.handleBlur}
                                 />
                                 {formik.touched.password && formik.errors.password ? (
                                     <div className="mb-4 text-red-700">

@@ -5,7 +5,7 @@ import { useRouter } from 'next/router'
 const Sidebar = () => {
     const router = useRouter()
     return (
-        <aside className="bg-red-600 sm:w-1/3 xl:w-1/5 sm:min-h-screen p-5">
+        <aside className="bg-red-600 xs:w-1/3 sm:w-1/5 sm:min-h-screen p-5">
             <div>
                 <p className="text-2xl font-black">🎬 MovieApp</p>
             </div>
