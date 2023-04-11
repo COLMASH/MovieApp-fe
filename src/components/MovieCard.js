@@ -47,7 +47,7 @@ const MovieCard = ({
                 favoriteId: apiId
             },
             onError: error => {
-                if (error.message.includes("Movie hasn't been found.")) {
+                if (error.message.includes("Movie hasn't been found")) {
                     setMessage('Movie already removed from favorites')
                     setTimeout(() => {
                         setMessage(null)
@@ -97,7 +97,7 @@ const MovieCard = ({
                 />
             )}
             {message && showMessage()}
-            <img className="w-full" src={posterImage} alt={title} />
+            <Image className="w-full" src={posterImage} alt={title} height={500} width={500} />
             <div className="px-6 py-4">
                 {title && <h1 className="font-bold text-xl mb-2">{title}</h1>}
                 {type && <p>{`Type: ${type}`}</p>}
