@@ -1,5 +1,4 @@
 import React, { useState } from 'react'
-import Image from 'next/image'
 import { ADD_MOVIE_TO_FAVORITES, REMOVE_MOVIE_FROM_FAVORITES } from '@/graphQL/mutations/movies'
 import { useMutation } from '@apollo/client'
 import { useRouter } from 'next/router'
