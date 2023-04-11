@@ -97,7 +97,7 @@ const MovieCard = ({
                 />
             )}
             {message && showMessage()}
-            <Image className="w-full" src={posterImage} alt={title} height={500} width={500} />
+            <img className="w-full" src={posterImage} alt={title} />
             <div className="px-6 py-4">
                 {title && <h1 className="font-bold text-xl mb-2">{title}</h1>}
                 {type && <p>{`Type: ${type}`}</p>}
