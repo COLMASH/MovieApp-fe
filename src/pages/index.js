@@ -6,12 +6,15 @@ import MovieCard from '../components/MovieCard'
 import { moviePlaceholder } from '../assets'
 import { GET_USER } from '@/graphQL/queries/user'
 import { useRouter } from 'next/router'
+import Pagination from '@/components/Pagination'
 
 export default function Home() {
     const [movies, setMovies] = useState([])
     const [search, setSearch] = useState('')
     const [errorMessage, setErrorMessage] = useState('')
     const [movieId, setMovieId] = useState('')
+    const [page, setPage] = useState(1)
+    const [totalResults, setTotalResults] = useState(0)
     const [token, setToken] = useState(null)
     const [hasEffectFinished, setHasEffectFinished] = useState(false)
     const router = useRouter()
@@ -26,19 +29,24 @@ export default function Home() {
         skip: search === '',
         variables: {
             input: {
-                page: 1,
+                page: page,
                 title: search
             }
         },
         fetchPolicy: 'network-only',
         onError: error => {
             if (search && error.message.includes('Too many results.')) {
+                setTotalResults(0)
                 setErrorMessage('Too many results, please by more specific')
                 setMovies([])
             } else {
+                setTotalResults(0)
                 setErrorMessage('Something went wrong, please try again')
                 setMovies([])
             }
+        },
+        onCompleted: data => {
+            setTotalResults(data.getGeneralMoviesInfo.totalResults)
         }
     })
 
@@ -57,6 +65,7 @@ export default function Home() {
 
     const handleSearch = e => {
         setErrorMessage('')
+        setPage(1)
         setSearch(e.target.value)
     }
 
@@ -66,14 +75,18 @@ export default function Home() {
     }, [token])
 
     useEffect(() => {
-        if (data) setMovies(data.getGeneralMoviesInfo.movies)
+        if (data) {
+            setMovies(data.getGeneralMoviesInfo.movies)
+        }
         if (search && data?.getGeneralMoviesInfo?.totalResults === null) {
             setErrorMessage('No results found 🔍')
         }
     }, [data, movies, search, movieId])
 
     useEffect(() => {
-        if (detailData) setMovies(detailData.getDetailedFavoriteInfo.movies)
+        if (detailData) {
+            setMovies(detailData.getDetailedFavoriteInfo.movies)
+        }
         if (movieId && detailData?.getDetailedFavoriteInfo?.totalResults === null) {
             setErrorMessage('No results found 🔍')
         }
@@ -101,7 +114,10 @@ export default function Home() {
                               >
                                   <div
                                       className="hover:cursor-pointer text-2xl"
-                                      onClick={() => setMovieId('')}
+                                      onClick={() => {
+                                          setErrorMessage('')
+                                          setMovieId('')
+                                      }}
                                   >
                                       <span className="font-black">{'<--'}</span> Back
                                   </div>
@@ -121,28 +137,45 @@ export default function Home() {
                           )
                       })
                     : !detailLoading && (
-                          <div className="grid sm:grid-cols-3 grid-rows-4 gap-5 my-10">
-                              {movies &&
-                                  movies.map(movie => {
-                                      return (
-                                          <div
-                                              key={movie.apiId}
-                                              onClick={() => setMovieId(movie.apiId)}
-                                          >
-                                              <MovieCard
-                                                  posterImage={
-                                                      movie.Poster !== 'N/A'
-                                                          ? movie.Poster
-                                                          : moviePlaceholder
-                                                  }
-                                                  title={movie.Title}
-                                                  year={movie.Year}
-                                                  type={movie.Type}
-                                              />
-                                          </div>
-                                      )
-                                  })}
-                          </div>
+                          <>
+                              {totalResults >= 1 && (
+                                  <div className="flex my-10 justify-center text-center">
+                                      <Pagination
+                                          setPage={setPage}
+                                          setErrorMessage={setErrorMessage}
+                                          setMovieId={setMovieId}
+                                          totalResults={totalResults}
+                                      >
+                                          {`Page ${page} of ${Math.ceil(totalResults / 10)}`}
+                                      </Pagination>
+                                  </div>
+                              )}
+                              <div className="grid sm:grid-cols-3 grid-rows-4 gap-5 my-10">
+                                  {movies &&
+                                      movies.map(movie => {
+                                          return (
+                                              <div
+                                                  key={movie.apiId}
+                                                  onClick={() => {
+                                                      setMovieId(movie.apiId)
+                                                      setErrorMessage('')
+                                                  }}
+                                              >
+                                                  <MovieCard
+                                                      posterImage={
+                                                          movie.Poster !== 'N/A'
+                                                              ? movie.Poster
+                                                              : moviePlaceholder
+                                                      }
+                                                      title={movie.Title}
+                                                      year={movie.Year}
+                                                      type={movie.Type}
+                                                  />
+                                              </div>
+                                          )
+                                      })}
+                              </div>
+                          </>
                       )}
             </Layout>
         </div>

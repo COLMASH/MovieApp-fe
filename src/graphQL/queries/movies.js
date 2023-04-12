@@ -15,8 +15,8 @@ export const GET_GENERAL_MOVIES_INFO = gql`
     }
 `
 export const GET_DETAILED_FAVORITE_INFO = gql`
-    query GetDetailedFavoriteInfo($favoriteId: String) {
-        getDetailedFavoriteInfo(favoriteId: $favoriteId) {
+    query GetDetailedFavoriteInfo($favoriteId: String, $page: Int) {
+        getDetailedFavoriteInfo(favoriteId: $favoriteId, page: $page) {
             movies {
                 Title
                 Year
