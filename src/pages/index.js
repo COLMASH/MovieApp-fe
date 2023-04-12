@@ -40,8 +40,8 @@ export default function Home() {
                 setErrorMessage('Too many results, please by more specific')
                 setMovies([])
             } else {
+                console.warn(error)
                 setTotalResults(0)
-                setErrorMessage('Something went wrong, please try again')
                 setMovies([])
             }
         },
