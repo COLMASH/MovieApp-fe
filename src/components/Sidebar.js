@@ -20,7 +20,7 @@ const Sidebar = () => {
                 <li className={router.asPath === '/favorites' ? 'bg-red-400 p-3' : 'p-3'}>
                     <Link href="/favorites">Favorites</Link>
                 </li>
-                <div className="mt-60 p-3 hover:cursor-pointer" onClick={handleLogout}>
+                <div className="p-3 hover:cursor-pointer" onClick={handleLogout}>
                     <p>Logout</p>
                 </div>
             </nav>
