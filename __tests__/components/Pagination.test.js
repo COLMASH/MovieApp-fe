@@ -5,7 +5,7 @@ describe('Pagination', () => {
     beforeEach(() => {
         render(
             <Pagination
-                setPage={page => ++page}
+                setPage={(page = 1) => ++page}
                 setErrorMessage={() => 'Error message'}
                 setMovieId={() => 'MovieId'}
                 totalResults={() => 10}
@@ -14,18 +14,18 @@ describe('Pagination', () => {
             </Pagination>
         )
     })
-    it('renders a pagination', () => {
-        const arrow = screen.getByText(/-->/i)
-        expect(arrow).toBeInTheDocument()
+    it('-1- test if children is rendered correctly', () => {
+        const children = screen.getByText(/Total pages/i)
+        expect(children).toBeInTheDocument()
     })
-    it('renders a pagination and test if left arrow click is working as expected', () => {
-        const arrow = screen.getByText(/-->/i)
-        fireEvent.click(arrow)
-        expect(arrow).toBeInTheDocument()
+    it('-2- test left arrow click', () => {
+        const leftArrow = screen.getByText(/<--/i)
+        fireEvent.click(leftArrow)
+        expect(leftArrow).toBeInTheDocument()
     })
-    it('renders a pagination and test if right arrow click is working as expected', () => {
-        const arrow = screen.getByText(/<--/i)
-        fireEvent.click(arrow)
-        expect(arrow).toBeInTheDocument()
+    it('-3- test right arrow click', () => {
+        const rightArrow = screen.getByText(/-->/i)
+        fireEvent.click(rightArrow)
+        expect(rightArrow).toBeInTheDocument()
     })
 })
