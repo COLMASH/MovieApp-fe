@@ -11,7 +11,7 @@ const Sidebar = () => {
     return (
         <aside className="bg-red-600 xs:w-1/3 sm:w-1/5 sm:min-h-screen p-5">
             <div>
-                <p className="text-2xl font-black">🎬 MovieApp</p>
+                <p className="text-base sm:text-2xl font-black">🎬 MovieApp</p>
             </div>
             <nav className="mt-5 list-none">
                 <li className={router.asPath === '/' ? 'bg-red-400 p-3' : 'p-3'}>
